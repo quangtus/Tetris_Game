@@ -52,13 +52,13 @@ public class ModeSelectionFrame extends JFrame {
         userLabel.setForeground(DARK_BLUE);
         userPanel.add(userLabel);
         
-        // Panel chứa các nút
+        // Panel chứa các nút - thay đổi từ GridLayout(2, 1) sang GridLayout(3, 1)
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 0, 20));
+        buttonPanel.setLayout(new GridLayout(3, 1, 0, 20));
         buttonPanel.setBackground(LIGHT_BLUE);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         
-        // Nút chơi đơn
+        // Nút chơi đơn (giữ nguyên)
         JButton singlePlayerButton = createStyledButton("Single Player", "/zetcode/player1_icon.png", BUTTON_COLOR, BUTTON_HOVER_COLOR);
         singlePlayerButton.addActionListener(e -> {
             AudioPlayer startSound = new AudioPlayer();
@@ -70,7 +70,20 @@ public class ModeSelectionFrame extends JFrame {
             });
         });
         
-        // Nút chơi hai người
+        // Nút chế độ tốc độ tăng dần (MỚI)
+        JButton speedModeButton = createStyledButton("Speed Mode", "/zetcode/speed_icon.png", 
+                new Color(0, 100, 180), new Color(0, 120, 210));
+        speedModeButton.addActionListener(e -> {
+            AudioPlayer startSound = new AudioPlayer();
+            startSound.play("resources/start.wav");
+            dispose();
+            EventQueue.invokeLater(() -> {
+                var speedGame = new SpeedModeFrame(username);
+                speedGame.setVisible(true);
+            });
+        });
+        
+        // Nút chơi hai người (giữ nguyên)
         JButton twoPlayerButton = createStyledButton("Two Player Mode", "/zetcode/player2_icon.png", BUTTON_COLOR, BUTTON_HOVER_COLOR);
         twoPlayerButton.addActionListener(e -> {
             AudioPlayer startSound = new AudioPlayer();
@@ -82,7 +95,9 @@ public class ModeSelectionFrame extends JFrame {
             });
         });
         
+        // Thêm các nút vào panel
         buttonPanel.add(singlePlayerButton);
+        buttonPanel.add(speedModeButton);  // Thêm nút mới
         buttonPanel.add(twoPlayerButton);
         
         // Panel đăng xuất ở dưới cùng

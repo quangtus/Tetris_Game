@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "MailTest",
+            "request": "launch",
+            "mainClass": "com.zetcode.MailTest",
+            "projectName": "Tetris_Game_ed7beda0"
+        },
+        {
+            "type": "java",
+            "name": "Tetris",
+            "request": "launch",
+            "mainClass": "com.zetcode.Tetris",
+            "projectName": "Tetris_Game_ed7beda0"
+        },
+        {
+            "type": "java",
+            "name": "Launch Tetris",
+            "request": "launch",
+            "mainClass": "com.zetcode.Tetris",
+            "projectName": "Tetris_Game",
+            "classPaths": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/lib/angus-activation-2.0.1.jar",
+                "${workspaceFolder}/lib/jakarta.activation-2.0.1.jar",
+                "${workspaceFolder}/lib/jakarta.activation-api-2.0.1.jar",
+                "${workspaceFolder}/lib/jakarta.mail-2.0.1.jar", 
+                "${workspaceFolder}/lib/jakarta.mail-api-2.0.1.jar",
+                "${workspaceFolder}/lib/sqlite-jdbc-3.49.0.0.jar"
+            ]
+        }
+    ]
+}

@@ -3,8 +3,7 @@ package com.zetcode;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,106 +14,218 @@ public class LoginFrame extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private JButton registerButton;
+
+    // Màu sắc
+    private final Color LIGHT_BLUE = new Color(173, 216, 230);
+    private final Color DARK_BLUE = new Color(0, 102, 153);
+    private final Color BUTTON_BLUE = new Color(0, 153, 204);
+    private final Color BUTTON_BLUE_HOVER = new Color(0, 180, 240);
 
     public LoginFrame() {
         initUI();
     }
 
     private void initUI() {
+        // === THIẾT LẬP CƠ BẢN FRAME ===
         setTitle("Tetris - Login");
-        setSize(400, 300);
+        setSize(450, 420);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Đặt màu nền xanh nhạt cho toàn bộ frame
-        getContentPane().setBackground(new Color(173, 216, 230)); // Light blue
+        // Đặt màu nền chính
+        getContentPane().setBackground(LIGHT_BLUE);
         
-        // Tạo panel chính với màu nền xanh nhạt
+        // === TẠO PANEL CHÍNH ===
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(10, 10));
-        mainPanel.setBackground(new Color(173, 216, 230)); // Light blue
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(LIGHT_BLUE);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         
-        // Tạo panel tiêu đề
+        // === TẠO PANEL TIÊU ĐỀ ===
         JPanel titlePanel = new JPanel();
-        titlePanel.setBackground(new Color(173, 216, 230)); // Light blue
+        titlePanel.setBackground(LIGHT_BLUE);
+        titlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         JLabel titleLabel = new JLabel("Welcome to Tetris");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(0, 102, 153)); // Dark blue text
+        titleLabel.setForeground(DARK_BLUE);
         titlePanel.add(titleLabel);
         
-        // Tạo panel chứa form đăng nhập
-        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        formPanel.setBackground(new Color(173, 216, 230)); // Light blue
+        // === TẠO PANEL FORM ĐĂNG NHẬP ===
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 15, 20));
+        formPanel.setBackground(LIGHT_BLUE);
+        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+        formPanel.setMaximumSize(new Dimension(600, 120));
         
         JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        usernameLabel.setFont(new Font("Arial", Font.BOLD, 16));
         formPanel.add(usernameLabel);
         
         usernameField = new JTextField();
-        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 16));
+        usernameField.setPreferredSize(new Dimension(250, 40));
+        usernameField.setMargin(new Insets(5, 7, 5, 7));
         formPanel.add(usernameField);
         
         JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 16));
         formPanel.add(passwordLabel);
         
         passwordField = new JPasswordField();
-        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        passwordField.setPreferredSize(new Dimension(250, 40));
+        passwordField.setMargin(new Insets(5, 7, 5, 7));
         formPanel.add(passwordField);
         
-        // Tạo panel cho các nút
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
-        buttonPanel.setBackground(new Color(173, 216, 230)); // Light blue
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 0, 40));
+        // === TẠO PANEL NÚT ĐĂNG NHẬP (Chỉ còn 1 nút) ===
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setBackground(LIGHT_BLUE);
+        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.setMaximumSize(new Dimension(200, 50));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         
-        loginButton = new JButton("Login");
-        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loginButton.setBackground(new Color(0, 153, 204)); // Bright blue
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFocusPainted(false);
+        // Nút login ở giữa
+        loginButton = createStyledButton("Login", BUTTON_BLUE, BUTTON_BLUE_HOVER, Color.WHITE);
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        registerButton = new JButton("Register");
-        registerButton.setFont(new Font("Arial", Font.BOLD, 14));
-        registerButton.setBackground(new Color(51, 204, 255)); // Lighter blue
-        registerButton.setForeground(Color.WHITE);
-        registerButton.setFocusPainted(false);
+        // Container để căn giữa nút
+        JPanel loginButtonContainer = new JPanel();
+        loginButtonContainer.setBackground(LIGHT_BLUE);
+        loginButtonContainer.add(loginButton);
         
-        buttonPanel.add(loginButton);
-        buttonPanel.add(registerButton);
+        // === TẠO PANEL LIÊN KẾT (Đăng ký & Quên mật khẩu) ===
+        JPanel linkPanel = new JPanel();
+        linkPanel.setLayout(new BoxLayout(linkPanel, BoxLayout.Y_AXIS));
+        linkPanel.setBackground(LIGHT_BLUE);
+        linkPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        // Thêm các panel vào panel chính
-        mainPanel.add(titlePanel, BorderLayout.NORTH);
-        mainPanel.add(formPanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        // Liên kết đăng ký
+        JPanel registerLinkPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        registerLinkPanel.setBackground(LIGHT_BLUE);
         
-        // Thêm panel chính vào frame
+        JButton registerLink = new JButton("Chưa có tài khoản? Đăng ký");
+        styleAsLink(registerLink);
+        registerLink.addActionListener(e -> openRegisterPage());
+        registerLinkPanel.add(registerLink);
+        
+        // Liên kết quên mật khẩu
+        JPanel forgotPasswordPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        forgotPasswordPanel.setBackground(LIGHT_BLUE);
+        
+        JButton forgotPasswordButton = new JButton("Quên mật khẩu?");
+        styleAsLink(forgotPasswordButton);
+        forgotPasswordButton.addActionListener(e -> openForgotPasswordPage());
+        forgotPasswordPanel.add(forgotPasswordButton);
+        
+        // Thêm vào panel liên kết
+        linkPanel.add(registerLinkPanel);
+        linkPanel.add(Box.createVerticalStrut(5)); // Khoảng cách giữa hai liên kết
+        linkPanel.add(forgotPasswordPanel);
+        
+        // === THÊM PANEL VÀO PANEL CHÍNH ===
+        mainPanel.add(titlePanel);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(formPanel);
+        mainPanel.add(loginButtonContainer);
+        mainPanel.add(Box.createVerticalStrut(20));
+        mainPanel.add(linkPanel);
+        
+        // === THÊM PANEL CHÍNH VÀO FRAME ===
         add(mainPanel);
         
-        // Thêm xử lý sự kiện cho các nút
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleLogin();
-            }
-        });
+        // === THÊM XỬ LÝ SỰ KIỆN ===
+        loginButton.addActionListener(e -> handleLogin());
         
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleRegister();
-            }
-        });
-        
-        // Chỉnh rootPane để mặc định là nút login khi nhấn Enter
+        // Đặt nút Login là mặc định khi nhấn Enter
         getRootPane().setDefaultButton(loginButton);
     }
-
-    private void handleLogin() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
     
+    private JButton createStyledButton(String text, Color bgColor, Color hoverColor, Color fgColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 17));
+        button.setBackground(bgColor);
+        button.setForeground(fgColor);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(170, 45));
+        
+        // Thiết lập border với viền tròn nhẹ
+        button.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(bgColor.darker(), 1, true),
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        ));
+        
+        // Thêm hiệu ứng hover
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverColor);
+                button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(bgColor);
+                button.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                button.setBackground(bgColor.darker());
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (button.contains(e.getPoint())) {
+                    button.setBackground(hoverColor);
+                } else {
+                    button.setBackground(bgColor);
+                }
+            }
+        });
+        
+        return button;
+    }
+    
+    // Style cho các liên kết (hiển thị như text)
+    private void styleAsLink(JButton button) {
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setForeground(DARK_BLUE);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setFont(new Font("Arial", Font.ITALIC, 14));
+        button.setFocusPainted(false);
+    }
+    
+    // Mở trang đăng ký
+    private void openRegisterPage() {
+        dispose();
+        EventQueue.invokeLater(() -> {
+            var registerFrame = new RegisterFrame();
+            registerFrame.setVisible(true);
+        });
+    }
+    
+    // Mở trang quên mật khẩu
+    private void openForgotPasswordPage() {
+        dispose();
+        EventQueue.invokeLater(() -> {
+            var forgotPasswordFrame = new ForgotPasswordFrame();
+            forgotPasswordFrame.setVisible(true);
+        });
+    }
+    
+    private void handleLogin() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+        
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", 
+                "Thông tin thiếu", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         if (checkLogin(username, password)) {
             JOptionPane.showMessageDialog(this, "Login successful!");
             dispose();
@@ -123,10 +234,12 @@ public class LoginFrame extends JFrame {
                 modeSelectionFrame.setVisible(true);
             });
         } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "Tên đăng nhập hoặc mật khẩu không đúng.", 
+                "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private boolean checkLogin(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
@@ -138,40 +251,6 @@ public class LoginFrame extends JFrame {
             ResultSet rs = pstmt.executeQuery();
 
             return rs.next();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
-    private void handleRegister() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-        
-        if (username.trim().isEmpty() || password.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username and password cannot be empty.", "Registration Failed", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (registerUser(username, password)) {
-            JOptionPane.showMessageDialog(this, "Registration successful! You can now login.");
-            usernameField.setText("");
-            passwordField.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Registration failed. Username may already exist.", "Registration Failed", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private boolean registerUser(String username, String password) {
-        String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
-
-        try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.executeUpdate();
-            return true;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return false;

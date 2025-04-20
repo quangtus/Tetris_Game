@@ -29,11 +29,11 @@ public class Tetris extends JFrame {
     private JLabel statusbar;       // displays score
     private JPanel topPanel;        // top panel holding the back button
     private JButton backButton;     // back button for returning to mode selection
-    private Board board;            // the game board
+    protected Board board;            // the game board
 
     // === Game State ===
-    private String username;        // player's name
-    private AudioPlayer audioPlayer;// for background music
+    protected String username;        // player's name
+    protected AudioPlayer audioPlayer;// for background music
 
     public Tetris(String username) {
         this.username = username;
@@ -80,13 +80,13 @@ public class Tetris extends JFrame {
         add(topPanel, BorderLayout.NORTH);
     }
 
-    private void createGameBoard() {
+    protected void createGameBoard() {
         board = new Board(this, username);
         add(board);
         board.start();
     }
 
-    private void startBackgroundMusic() {
+    protected void startBackgroundMusic() {
         audioPlayer = new AudioPlayer();
         audioPlayer.playRandomLoop(Arrays.asList(
             "resources/single_player_music1.wav",

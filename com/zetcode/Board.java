@@ -20,28 +20,28 @@ import java.awt.event.KeyEvent;
 public class Board extends JPanel {
 
     // === CONSTANTS ===
-    private final int BOARD_WIDTH = 10;
-    private final int BOARD_HEIGHT = 22;
-    private final int PERIOD_INTERVAL = 100;
+    protected final int BOARD_WIDTH = 10;
+    protected final int BOARD_HEIGHT = 22;
+    protected final int PERIOD_INTERVAL = 100;
 
     // === GAME STATE ===
-    private Timer timer;
-    private boolean isFallingFinished = false;
-    private boolean isPaused = false;
-    private boolean isStopping = false;      // Flag to indicate the game is intentionally being stopped
+    protected Timer timer;
+    protected boolean isFallingFinished = false;
+    protected boolean isPaused = false;
+    protected boolean isStopping = false;      // Flag to indicate the game is intentionally being stopped
     private boolean showGhostPiece = false;  // Whether to show ghost piece (shadow)
     private boolean isDarkMode = false;      // Dark mode flag
 
     // === GAME DATA ===
-    private int numLinesRemoved = 0;
-    private int curX = 0;
-    private int curY = 0;
-    private String username;
-    private Shape curPiece;
-    private Tetrominoe[] board;
+    protected int numLinesRemoved = 0;
+    protected int curX = 0;
+    protected int curY = 0;
+    protected String username;
+    protected Shape curPiece;
+    protected Tetrominoe[] board;
 
     // === UI COMPONENTS ===
-    private JLabel statusbar;
+    protected JLabel statusbar; // Status bar to display score
     private Tetris parent;  // Reference to parent frame
 
     /**
@@ -221,14 +221,14 @@ public class Board extends JPanel {
     /**
      * Check which shape is at the given position.
      */
-    private Tetrominoe shapeAt(int x, int y) {
+    protected Tetrominoe shapeAt(int x, int y) {
         return board[(y * BOARD_WIDTH) + x];
     }
 
     /**
      * Create and position a new piece.
      */
-    private void newPiece() {
+    protected void newPiece() {
         // Don't create new piece if we're stopping the game
         if (isStopping) {
             return;
@@ -253,12 +253,15 @@ public class Board extends JPanel {
             gameOverSound.play("resources/gameover.wav");
 
             // Check high score
-            int highScore = Database.getHighScore(username);
+            // Trong phương thức newPiece(), thay thế đoạn mã kiểm tra điểm cao:
+
+            // Check high score
+            int highScore = Database.getHighScore(username, Database.SINGLE_MODE);
             String msg = String.format("Game over. Score: %d. High score: %d", 
-                                     numLinesRemoved, highScore);
+                                    numLinesRemoved, highScore);
 
             if (numLinesRemoved > highScore) {
-                Database.updateHighScore(username, numLinesRemoved);
+                Database.updateHighScore(username, numLinesRemoved, Database.SINGLE_MODE);
                 msg += "\nChúc mừng bạn đã phá kỷ lục!";
             }
 
@@ -348,7 +351,7 @@ public class Board extends JPanel {
     /**
      * Handle when a piece is dropped to the bottom.
      */
-    private void pieceDropped() {
+    protected void pieceDropped() {
         // Add the piece to the board
         for (int i = 0; i < 4; i++) {
             int x = curX + curPiece.x(i);
@@ -368,7 +371,7 @@ public class Board extends JPanel {
     /**
      * Remove completed lines and update score.
      */
-    private void removeFullLines() {
+    protected void removeFullLines() {
         int numFullLines = 0;
 
         // Check each line from bottom to top
@@ -418,7 +421,7 @@ public class Board extends JPanel {
      * 
      * @return true if the move is valid
      */
-    private boolean tryMove(Shape newPiece, int newX, int newY) {
+    protected boolean tryMove(Shape newPiece, int newX, int newY) {
         for (int i = 0; i < 4; i++) {
             int x = newX + newPiece.x(i);
             int y = newY - newPiece.y(i);
@@ -485,7 +488,7 @@ public class Board extends JPanel {
     /**
      * Restart the game.
      */
-    private void restartGame() {
+    protected void restartGame() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
         }
